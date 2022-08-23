@@ -22,18 +22,18 @@ log4jLogger = spark.sparkContext._jvm.org.apache.log4j
 logger = log4jLogger.LogManager.getLogger(__name__)
 
 KAFKA_CONFIG = {
-    'kafka.bootstrap.servers': config[self.env]['kafka_brokers'],
-    'kafka.ssl.truststore.location': config['kafka']['truststore_path'],
+    'kafka.bootstrap.servers': 'b-1.kafka-cluster-dev.....',
+    'kafka.ssl.truststore.location': '/usr/lib/jvm/jre/lib/security/cacerts',
     'kafka.security.protocol': 'SSL',
     'kafka.ssl.protocol': 'SSL',
-    'assign': json.dumps(data_tags_partition_dict),
-    'groupIdPrefix': config['streaming_setting']['group_id_prefix'],
-    'minPartitions': config['streaming_setting']['min_partitions'],
-    'maxOffsetsPerTrigger': config['streaming_setting']['qps_upperbound']*30*60,
-    'startingOffsets': config['kafka']['offset_strategy'],
+    'assign': '{"mysql-test-table": [0,1] }',
+    'groupIdPrefix': 'kafka-to-delta-lake-cdc-streaming',
+    'minPartitions': 200,
+    'maxOffsetsPerTrigger': 60000*30*60, ## QPS Calculate
+    'startingOffsets': 'latest',
     'failOnDataLoss': True,
-    'kafka.fetch.min.bytes': config['update_parameters_setting']['fetch_min_bytes'],
-    'kafka.fetch.max.wait.ms': config['update_parameters_setting']['fetch_max_wait_ms']
+    'kafka.fetch.min.bytes': 1048576,
+    'kafka.fetch.max.wait.ms': 10000
 }
 
 def foreach_batch_cdc_func(mirco_batch_df, batchId):

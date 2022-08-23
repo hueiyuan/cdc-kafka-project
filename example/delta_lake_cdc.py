@@ -59,7 +59,7 @@ def foreach_batch_cdc_func(mirco_batch_df, batchId):
         .whenNotMatchedInsertAll()\
         .execute()
     
-## other transform situation ##
+## Using UpdateAll for merge into ##
 #     original_delta_df.alias('old_df')\
 #         .merge(mirco_batch_df.alias('new_df'), "old_df.id = new_df.id")\
 #         .whenMatchedDelete(condition = "new_df.op = 'd'")\
@@ -67,6 +67,17 @@ def foreach_batch_cdc_func(mirco_batch_df, batchId):
 #             condition = "new_df.op = 'u'"
 #         )\
 #         .whenNotMatchedInsertAll()\
+#         .execute()
+
+## Specific date period to execute cdc ##
+#     original_delta_df.alias('old_df')\
+#         .merge(mirco_batch_df.alias('new_df'), "old_df.id = new_df.id")\
+#         .whenMatchedDelete(condition = "new_df.op = 'd'")\
+#         .whenMatchedUpdateAll(
+#             condition = "new_df.op = 'u'"
+#         )\
+#         .whenNotMatchedInsertAll(
+#             condition="new_df.date > current_date() - INTERVAL 7 days")\
 #         .execute()
 
 def main():
